@@ -1,0 +1,99 @@
+#!/bin/sh
+# 
+# git push
+rmcolor()
+{
+    sed -ri "s/\x1B\[[0-9;]*[mK]//g" $1
+}
+
+exit_handler()
+{
+	if [ -f ~/omci_last_commit.diff ] && [ -f ~/omci.buildlog ]; then
+	rmcolor ~/omci.buildlog
+	mail -s "[Notification] OMCI breaks build" -a ~/omci_last_commit.diff ch_chiang@arcadyan.com.tw < ~/omci.buildlog
+	mail -s "[Notification] OMCI breaks build" -a ~/omci_last_commit.diff cindy_wu@arcadyan.com.tw < ~/omci.buildlog
+	mail -s "[Notification] OMCI breaks build" -a ~/omci_last_commit.diff mars_huang@arcadyan.com.tw < ~/omci.buildlog
+	mail -s "[Notification] OMCI breaks build" -a ~/omci_last_commit.diff james_chao@arcadyan.com.tw < ~/omci.buildlog
+	mail -s "[Notification] OMCI breaks build" -a ~/omci_last_commit.diff clare_chung@arcadyan.com.tw < ~/omci.buildlog
+	else
+		mail -s "[Notification] OMCI push check error" -a ~/omci_last_commit.diff ch_chiang@arcadyan.com.tw < ~/omci.buildlog
+	fi
+}
+
+set -e
+
+trap "exit_handler" ERR
+
+code_path=(~/projects/telus_PRV65B444A-S-TS/master \
+	   ~/projects/eircom/eircom)
+
+git_url=(gitolite@sw6-builder.arcadyan.com.tw:salt/salt-xgspon.git \
+	 ssh://gitolite@sw6-builder.arcadyan.com.tw/pxs/pxs-sfu.git)
+
+project_name=(./config/PRV65B444A-S-TS-SDK5.02L06 \
+	      ./config/PRV65B9B-S-EIR)
+
+omci_path=(omci_package/src/src \
+           omci_package/src/src )
+
+make_omci_path=(package/arcadyan-utility/arc_omci_v2 \
+		package/arcadyan-utility/arc_omci_v2 )
+
+code_base_size=${#code_path[*]}
+
+rm -f ~/omci_last_committer
+rm -f ~/omci_last_commit.diff
+rm -f ~/omci.buildlog
+rm -f ~/omci.buildok
+
+pushd ~/projects/omci/
+orig_commit_id=`git log HEAD^...HEAD --pretty=oneline | awk '{ print $1 }'`
+if [ "`git pull | grep 'Already up-to-date'`" != "" ]; then
+	popd
+	exit 0
+fi
+new_commit_id=`git log HEAD^...HEAD --pretty=oneline | awk '{ print $1 }'`
+echo ============= Recent commits ========== > ~/omci_last_committer 
+git log $orig_commit_id...$new_commit_id >> ~/omci_last_committer
+echo ============= Recent commits ========== >> ~/omci_last_committer
+git log $orig_commit_id...$new_commit_id -p > ~/omci_last_commit.diff
+popd
+
+for ((i=0; i < $code_base_size; i++))
+do
+	echo git: ${git_url[$i]} > ~/omci.buildlog
+	echo project: ${project_name[$i]} >> ~/omci.buildlog
+	cat ~/omci_last_committer >> ~/omci.buildlog
+	
+	if [ ! -d ${code_path[$i]} ]; then
+		mkdir -p ${code_path[$i]}
+		pushd ${code_path[$i]}
+		git clone ${git_url[$i]} .
+		./change-project.sh switch ${project_name[$i]}
+		./perform.sh all
+		popd
+	else
+		pushd ${code_path[$i]}
+		pushd ${omci_path[$i]}
+		git pull
+		popd
+		make ${make_omci_path[$i]}/{clean,compile,install} V=99 >> ~/omci.buildlog
+		popd
+	fi
+done
+
+echo OMCI build successfully in below projects. > ~/omci.buildok
+for ((i=0; i < $code_base_size; i++))
+do
+	echo project: ${git_url[$i]} ${project_name[$i]} >> ~/omci.buildok
+done
+echo "" >> ~/omci.buildok
+cat ~/omci_last_committer >> ~/omci.buildok
+if [ -f ~/omci_last_commit.diff ]; then
+	mail -s "[OK Notification] OMCI push check successed" -a ~/omci_last_commit.diff ch_chiang@arcadyan.com.tw < ~/omci.buildok
+	mail -s "[OK Notification] OMCI push check successed" -a ~/omci_last_commit.diff cindy_wu@arcadyan.com.tw < ~/omci.buildok
+	mail -s "[OK Notification] OMCI push check successed" -a ~/omci_last_commit.diff mars_huang@arcadyan.com.tw < ~/omci.buildok
+	mail -s "[OK Notification] OMCI push check successed" -a ~/omci_last_commit.diff james_chao@arcadyan.com.tw < ~/omci.buildok
+	mail -s "[OK Notification] OMCI push check successed" -a ~/omci_last_commit.diff clare_chung@arcadyan.com.tw < ~/omci.buildok
+	mail -s "[OK Notification] OMCI push check successed" -a ~/omci_last_commit.diff anne_liang@arcadyan.com.tw < ~/omci.buildok
+fi

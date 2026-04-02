@@ -1,0 +1,18 @@
+# input format
+# merge X:/a/b.c X:/A/B.c
+# output ::X:/a/b.c X:/A/B.c if X:/a/b.c is the same as X:/A/B.c 
+#        otherwise merge X:/a/b.c X:/A/B.c
+while read p
+do
+	[ "`echo $p | grep '::'`" != "" ] && continue
+	[ "`echo $p | grep merge`" != "" ] && {
+		_p=`echo $p | sed 's/X:/\/home3\/ch_chiang/gp'`
+		tokens=( $_p )
+		diffs=`diff ${tokens[1]} ${tokens[2]}`
+		[ "$diffs" == "" ] && {
+			echo ::${tokens[1]} ${tokens[2]} | sed 's/\/home3\/ch_chiang/X:/g'
+		}|| {
+			echo merge ${tokens[1]} ${tokens[2]} | sed 's/\/home3\/ch_chiang/X:/g'
+		}
+	}
+done < "$1"

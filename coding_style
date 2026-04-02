@@ -1,0 +1,8 @@
+#!/bin/sh
+cd ~/projects/omci_style
+git checkout -f
+git pull
+~/scripts/astyle  --style=allman --lineend=linux --recursive *.c,*.h
+git commit -a -m "Adjust coding style automatically"
+find . -iname *.orig | xargs rm -f
+git push

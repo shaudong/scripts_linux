@@ -1,0 +1,37 @@
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw/aldk-openwrt18/arcwrt.git master ~/projects/push-notify/arcwrt 'CHC' anne_liang@arcadyan.com.tw
+
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw/brcm-bsp/broadcom-bsp-5.02L07p1.git ARCWrt ~/projects/push-notify/broadcom-bsp-5.02L07p1-arcwrt 'CHC' anne_liang@arcadyan.com.tw
+
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw/epon/dpoe.git master ~/projects/push-notify/arc_dpoe 'CHC' anne_liang@arcadyan.com.tw
+
+~/scripts/push-notify gitolite@sw6-builder.arcadyan.com.tw:omci/omci.git master ~/projects/push-notify/omci 'CHC' anne_liang@arcadyan.com.tw
+
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw/aldk-openwrt18/arcwrt.git master ~/projects/push-notify/arcwrt '.' ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw/brcm-bsp/broadcom-bsp-5.02L07p1.git master ~/projects/push-notify/broadcom-bsp-5.02L07p1 '.' ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw/brcm-bsp/broadcom-bsp-5.02L07p1.git ARCWrt ~/projects/push-notify/broadcom-bsp-5.02L07p1-arcwrt '.' ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw:brcm68460-gpon/brcm68460-gpon.git EPON ~/projects/push-notify/dpoe '.' ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw/epon/dpoe.git master ~/projects/push-notify/arc_dpoe '.' ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify gitolite@sw6-builder.arcadyan.com.tw:omci/omci.git master ~/projects/push-notify/omci '.' ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify gitolite@sw6-builder.arcadyan.com.tw:omci/omci.git PRV33AC227B-1-B-TE ~/projects/push-notify/omci-PRV33AC227B-1-B-TE '.'  ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify gitolite@sw6-builder.arcadyan.com.tw:omci/omci.git AM_release_20201126  ~/projects/push-notify/omci-AM_release_20201126 '.'  ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify gitolite@sw6-builder.arcadyan.com.tw:omci/omci.git AM_release  ~/projects/push-notify/omci-AM_release '.'  ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify gitolite@sw6-builder.arcadyan.com.tw:omci/omci.git Smart4_OMCI_Branch ~/projects/push-notify/omci-Smart4_OMCI_Branch '.'  ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw/pxs/pxs-sfu.git AM ~/projects/push-notify/pxs-sfu.git-AM '.'  ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw/deutschetelekom/dt-pon.git DT_Smart4 ~/projects/push-notify/dt-pon.git-DT_Smart4 '.'  ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw/brcm68460-gpon/brcm68460-gpon.git Bytel_2020POC_release ~/projects/push-notify/brcm68460-gpon.git-Bytel_2020POC_release '.' ch_chiang@arcadyan.com.tw clare_chung@arcadyan.com.tw cindy_wu@arcadyan.com.tw yw_liu@arcadyan.com.tw james_chao@arcadyan.com.tw william_yuan@arcadyan.com.tw mars_huang@arcadyan.com.tw leo_wang@arcadyan.com.tw
+
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw/aldk-openwrt18/feed-broadcom-Verizon-prplWrt.git 5.04L02 ~/projects/push-notify/feed-broadcom-Verizon-prplWrt_504 '.' ch_chiang@arcadyan.com.tw
+
+~/scripts/push-notify ssh://gitolite@sw6-builder.arcadyan.com.tw/aldk-openwrt18/prplWrt.git 5.04L02 ~/projects/push-notify/prplWrt '.' ch_chiang@arcadyan.com.tw

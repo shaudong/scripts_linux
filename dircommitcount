@@ -1,0 +1,7 @@
+#!/bin/sh
+
+for subdir in `ls .`; do
+    commit_count=`git ls $@ $subdir | wc -l`
+    num_of_authors=`git log --pretty='%aN' $subdir | sort | uniq -c | wc -l`
+    [ "$commit_count" != "" ] && printf "commit_count=%-5d num_of_authors=%-5d $subdir\n" $commit_count $num_of_authors
+done

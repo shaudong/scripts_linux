@@ -1,0 +1,31 @@
+# $1 kernel config file (difffto)
+# $2 kernel config file (difffrom)
+# $3 kernel config file (mergeto)
+# This script compare the difference of $1 and $2 then show the result after merge to $3
+while read cfg2
+do
+	cfg_item=`echo $cfg2 | grep -o "CONFIG[_A-Z0-9]*"`
+	[ "$cfg_item" == "" ] &&  {
+		echo $cfg2
+		continue
+	}
+	cfg1=`grep "$cfg_item[ =]" $1`
+	cfg3=`grep "$cfg_item[ =]" $3`
+	[ "$cfg1" == "$cfg2" -a "$cfg2" == "$cfg3" -a "$cfg1" == "$cfg3" ] && {
+		[ "$cfg3" != "" ] && echo $cfg3
+		continue
+	}
+	[ "$cfg1" == "$cfg2" -o "$cfg2" == "$cfg3" ] && {
+		[ "$cfg3" != "" ] && echo $cfg3
+                continue
+        }
+        echo $cfg2
+done < "$2"
+while read cfg3
+do
+        cfg_item=`echo $cfg3 | grep -o "CONFIG[_A-Z0-9]*"`
+        [ "$cfg_item" == "" ] && continue
+        cfg1=`grep "$cfg_item[ =]" $1`
+        cfg2=`grep "$cfg_item[ =]" $2`
+        [ "$cfg2" == "" ] && echo $cfg3
+done < "$3"

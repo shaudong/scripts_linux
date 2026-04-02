@@ -1,0 +1,4 @@
+cur_dir=`pwd`
+cd omci_package/src/src/
+git $@
+cd $cur_dir

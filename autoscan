@@ -1,0 +1,113 @@
+#!/bin/sh
+
+set -eu
+
+[ "$#" -ge 1 ] && SCAN_DIR=$1 || SCAN_DIR=$PWD
+SCAN_DIR=$(cd "$SCAN_DIR" && pwd)
+EMAIL_TO="shaudong@gmail.com,ch_chiang@arcadyan.com"
+SCAN_PY="$HOME/scripts/scan.py"
+NEW_DIR="$SCAN_DIR/new"
+OLD_DIR="$SCAN_DIR/old"
+TMP_MAIL=$(mktemp)
+
+
+cd ${SCAN_DIR}/project;git checkout -f;git pull
+cd ${SCAN_DIR};git pull
+"$SCAN_PY" --arcwrt-root "$SCAN_DIR" --no-update-in 510d | xargs rm -rf
+
+cleanup() {
+    rm -f "$TMP_MAIL"
+}
+trap cleanup EXIT INT TERM
+
+if [ ! -f "$SCAN_PY" ]; then
+    echo "scan.py not found: $SCAN_PY" >&2
+    exit 1
+fi
+
+if [ -d "$OLD_DIR" ]; then
+    rm -rf "$OLD_DIR"
+fi
+
+if [ -d "$NEW_DIR" ]; then
+    mv "$NEW_DIR" "$OLD_DIR"
+fi
+
+mkdir -p "$NEW_DIR"
+
+"$SCAN_PY" --arcwrt-root "$SCAN_DIR" --out "$NEW_DIR"
+"$SCAN_PY" --arcwrt-root "$SCAN_DIR" --out "$NEW_DIR" --usage-count gpob_last_update
+"$SCAN_PY" --arcwrt-root "$SCAN_DIR" --no-update-in 300d > "$NEW_DIR/no_update_in.300d"
+"$SCAN_PY" --arcwrt-root "$SCAN_DIR" --no-update-in 500d > "$NEW_DIR/no_update_in.500d"
+
+print_section_title() {
+    printf '%s\r\n' "=================================================================="
+    printf '%s\r\n' "$1"
+    printf '%s\r\n' "=================================================================="
+}
+
+print_diff_section() {
+    old_file=$1
+    new_file=$2
+    title=$3
+
+    print_section_title "$title"
+
+    if [ ! -f "$new_file" ]; then
+        printf 'new file not found: %s\r\n' "$new_file"
+        return
+    fi
+
+    if [ ! -f "$old_file" ]; then
+        printf 'old file not found: %s\r\n' "$old_file"
+        printf 'showing full new file instead:\r\n'
+        cat "$new_file"
+        printf '\r\n'
+        return
+    fi
+
+    if diff -u "$old_file" "$new_file"; then
+        printf '\r\n(no difference)\r\n'
+    else
+        printf '\r\n'
+    fi
+}
+
+print_file_section() {
+    file=$1
+    title=$2
+
+    print_section_title "$title"
+
+    if [ -f "$file" ]; then
+        cat "$file"
+        printf '\r\n'
+    else
+        printf 'file not found: %s\r\n' "$file"
+    fi
+}
+
+{
+    printf 'To: %s\r\n' "$EMAIL_TO"
+    printf 'Subject: autoscan report - %s - %s\r\n' "$(hostname 2>/dev/null || echo unknown-host)" "$(date '+%Y-%m-%d %H:%M:%S')"
+    printf '\r\n'
+
+    print_diff_section "$OLD_DIR/usage_count.gpob" "$NEW_DIR/usage_count.gpob" "1. diff new/usage_count.gpob old/usage_count.gpob"
+    print_diff_section "$OLD_DIR/usage_count.unknown_project" "$NEW_DIR/usage_count.unknown_project" "2. diff new/usage_count.unknown_project old/usage_count.unknown_project"
+    print_file_section "$NEW_DIR/usage_count.gpob_last_update" "3. new/usage_count.gpob_last_update"
+    print_file_section "$NEW_DIR/no_update_in.300d" "4. new/no_update_in.300d"
+    print_file_section "$NEW_DIR/no_update_in.500d" "5. new/no_update_in.500d"
+} > "$TMP_MAIL"
+
+if command -v sendmail >/dev/null 2>&1; then
+    sendmail -t < "$TMP_MAIL"
+elif command -v mail >/dev/null 2>&1; then
+    mail -s "autoscan report - $(hostname 2>/dev/null || echo unknown-host) - $(date '+%Y-%m-%d %H:%M:%S')" "$EMAIL_TO" < "$TMP_MAIL"
+elif command -v mailx >/dev/null 2>&1; then
+    mailx -s "autoscan report - $(hostname 2>/dev/null || echo unknown-host) - $(date '+%Y-%m-%d %H:%M:%S')" "$EMAIL_TO" < "$TMP_MAIL"
+else
+    echo "no mail sender found (sendmail/mail/mailx)" >&2
+    echo "mail content saved at: $TMP_MAIL" >&2
+    trap - EXIT INT TERM
+    exit 1
+fi

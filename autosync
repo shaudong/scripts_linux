@@ -1,0 +1,40 @@
+#input variables
+#	PROJECT_NAME
+#	COREFILE
+if [ ! -d .repogit ] && [ ! -d .repo ]; then
+	echo "Please use autosync in a .repogit directory."
+	exit
+fi
+PROJECT_DIR=$(pwd)
+PROJECT_NAME=$(pwd | awk -F'/' '{print $NF}')
+COREFILE=${PROJECT_NAME}
+echo "Autosync project ${PROJECT_NAME}"
+
+BACKUP_ROOT=~/images/${PROJECT_NAME}/
+TIMESTAMP=$(date +%0G%0m%0e)
+BACKUP_DIR=${BACKUP_ROOT}/${TIMESTAMP}
+
+test -d ${BACKUP_ROOT} || mkdir -p ${BACKUP_ROOT}
+
+cd ${PROJECT_DIR}
+repo sync
+DIFF=$(repogit diff)
+if [ "${DIFF}" != "" ]; then	
+	test -d ${BACKUP_DIR} || mkdir -p ${BACKUP_DIR}
+	cd ${COREFILE}
+	pwd
+	rm product_flag.h.export
+	make	
+	make clean
+	make > ${BACKUP_DIR}/autosync_${TIMESTAMP}
+	if [ -e build/sysimg.bin ]; then
+		cd ${PROJECT_DIR}
+		repogit add .
+		repogit commit -a -m "Autobackup_${TIMESTAMP}"
+		repogit tag -a ${TIMESTAMP} -m "Autobackup_${TIMESTAMP}"
+		mv ${PROJECT_DIR}/${COREFILE}/build/sysimg.bin ${BACKUP_DIR}/sysimg_${TIMESTAMP}.bin
+	else
+		cd ${BACKUP_DIR}
+		touch Autobackup_fail_${TIMESTAMP}
+	fi
+fi

@@ -1,0 +1,32 @@
+# $1 kernel config file (diffto)
+# $2 kernel config file (difffrom)
+# This script compare the difference of $1 and $2
+while read cfg2
+do
+	cfg_item=`echo $cfg2 | grep -o "CONFIG[_A-Z0-9]*"`
+	[ "$cfg_item" == "" ] &&  {
+		echo $cfg2
+		continue
+	}
+	cfg1=`grep "$cfg_item[ =]" $1`
+	[ "$cfg1" != "" ] && {
+		echo $cfg1
+		continue
+	} || {
+		echo $cfg2
+		continue
+	}
+	
+done < "$2"
+while read cfg1
+do
+	cfg_item=`echo $cfg1 | grep -o "CONFIG[_A-Z0-9]*"`
+        [ "$cfg_item" == "" ] &&  {
+                continue
+        }
+        cfg2=`grep "$cfg_item[ =]" $2`
+        [ "$cfg2" == "" ] && {
+                echo $cfg1
+                continue
+        }
+done < "$1"

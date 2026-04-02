@@ -1,0 +1,64 @@
+#!/bin/sh
+# 
+# $1: git url
+# $2: branch name
+# $3: clone dir
+# $4: author name
+# $5~n: email list
+
+exit_handler()
+{
+	#mail -s "[Fail Notification]" -a ~/last_commit.diff ch_chiang@arcadyan.com.tw < ~/omci.buildlog
+	echo push-notify failed
+}
+
+set -e
+trap "exit_handler" ERR
+
+git_url=$1
+branch=$2
+code_path=$3
+grep_pattern=$4
+shift 4
+
+echo "***************** checking $git_url  ********************"
+
+rm -f ~/last_committer
+rm -f ~/last_commit.diff
+if [ ! -d $code_path ]; then
+	mkdir -p $code_path
+	pushd $code_path
+	git clone $git_url .
+else
+	pushd $code_path
+fi
+
+git checkout -f
+git checkout $branch
+orig_commit_id=`git log HEAD^...HEAD --pretty=oneline -1 | awk '{ print $1 }'`
+git pull
+new_commit_id=`git log HEAD^...HEAD --pretty=oneline -1 | awk '{ print $1 }'`
+if [ "`git log $orig_commit_id...$new_commit_id | grep Author: | grep $grep_pattern`" == "" ]; then
+	popd
+	exit 0
+fi
+
+echo "!!!!!!!!!!!!!!!!!!!!!!!! Preparing notification... !!!!!!!!!!!!!!!!!!!!!!!!!!!!! "
+
+echo "" > ~/last_committer 
+echo "======= Recent commits BRANCH $branch =======" >> ~/last_committer 
+echo "" >> ~/last_committer
+git log $orig_commit_id...$new_commit_id >> ~/last_committer
+echo "" >> ~/last_committer
+echo "======================================" >> ~/last_committer
+echo "" >> ~/last_committer
+git log $orig_commit_id...$new_commit_id -p > ~/last_commit.diff
+popd
+
+echo "git: $git_url" > ~/omci.buildlog
+cat ~/last_committer >> ~/omci.buildlog
+
+while (( "$#" )); do        # While there are arguments still to be shifted...
+	mail -s "[Git Notification] $git_url BRANCH $branch" -a ~/last_commit.diff $1 < ~/omci.buildlog
+	shift
+done
