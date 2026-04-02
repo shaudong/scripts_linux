@@ -1,7 +1,0 @@
-#!/bin/sh
-#
-
-./scripts/feeds update packages
-./scripts/feeds install -a
-grep PKG_VERSION -r feeds/packages
-
