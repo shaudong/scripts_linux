@@ -23,22 +23,11 @@ Usage: $0 [docker image] [root]
                 - Support Project "XC44BE4443T-F100-ZZ/v1.1.1" (openwrt 21.02 MTK T830)
                 - Support Project "XC44BE4443T-F100-ZZ/prplos_3.0" (PrplOS v3.0 MTK T830)
                 - Support Project "XC44BE443T-F100-DN/v1.1.1" (openwrt 23.05 MTK T830 Compal)
-	ubuntu:xenial-arcwrt-qca-v1.3
+	10.118.96.1/arcwrt/ubuntu:xenial-arcwrt-qca-v1.3
 		- Build Project "XC33AX443Y-F100-ZZ"
 		- Build SDK "qsdk-11_5-5g-fwa"
-	10.118.80.93/servers/econet_build:v1.01
-		- Build EN7528
-	10.118.80.93/servers/ubuntu_18.04:airoha-arht-v1.2
-		- Build AN7552 2024Q3 pre SDK
-	10.118.80.93/servers/ubuntu_18.04:airoha-arht-v1.3
-		- Build AN7552 2024Q3/Q4 SDK
-	rdkb-brcm-dteu-vrv9518baax24b2g:latest
-		- Build rdk dteu
         ubuntu:aldk_504l04p3_v2
 		- Build aldk at 504l04p3
-	arcsw2/orion7.2-builder
-		- ubuntu 18.04, RDK-B
-		- build RDK-F dt
 	ubuntu:openwrt2305-mtk-t930-v1.0
                 - Build MTK T930 SDK
 	ubuntu:openwrt2305-mtk-t930-v1.0-rdk-test
@@ -47,7 +36,6 @@ To install new package in container please use root user.
 EOF
 }
 if [ $# -eq 0 ]; then
-	docker images
 	docker_init_help
 	exit 0
 fi
