@@ -1,0 +1,3 @@
+#!/bin/bash
+CMD=$@
+[ -f ~/workspace/${JOB_NAME}/docker_id ] && docker exec -i -w ${PWD} `cat ~/workspace/${JOB_NAME}/docker_id`  bash -c "${CMD}"
