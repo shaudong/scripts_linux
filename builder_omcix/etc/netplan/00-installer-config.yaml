@@ -1,0 +1,13 @@
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    eno1:
+      match:
+        macaddress: 54:04:a6:b8:b7:59
+      set-name: eno1
+    enp6s0:
+      accept-ra: true
+      dhcp4: true
+      dhcp-identifier: mac
+      dhcp6: true
+  version: 2
