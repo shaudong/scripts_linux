@@ -6,7 +6,7 @@ confirm_and_cp() {
     echo ""
     
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        cp -i "$src" "$dest"
+        install -D "$src" "$dest"
     fi
     echo "--------------------------------"
 }
