@@ -1,0 +1,13 @@
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    enp7s0:
+      dhcp4: true
+      dhcp6: true
+      dhcp-identifier: mac
+      match:
+        macaddress: 30:56:0f:a0:ed:1a
+      set-name: enp7s0
+  version: 2
+  renderer: networkd
+  wifis: {}
