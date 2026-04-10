@@ -11,7 +11,13 @@ confirm_and_cp() {
     echo "--------------------------------"
 }
 
-for file in $(find etc usr -type f 2>/dev/null); do
+if [ "$1" == "" ]; then
+    echo Please specify a folder.
+    exit
+fi
+
+cd $1
+for file in $(find . -type f 2>/dev/null); do
     confirm_and_cp "$file" "/$file"
 done
 
