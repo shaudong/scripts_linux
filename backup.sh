@@ -17,7 +17,8 @@ if [ "$1" == "" ]; then
 fi
 
 cd $1
-for file in $(find . -type f 2>/dev/null); do
+shift
+for file in $(find . -type f 2>/dev/null) $@; do
     confirm_and_cp "/$file" "$file"
 done
 
