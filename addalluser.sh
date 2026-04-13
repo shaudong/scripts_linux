@@ -8,3 +8,4 @@
 /root/scripts/newuser.sh yw_liu A200008
 /root/scripts/newuser.sh elp_lin A100016
 /root/scripts/newuser.sh gary_hsieh A220103
+/root/scripts/newuser.sh hudson hudson
