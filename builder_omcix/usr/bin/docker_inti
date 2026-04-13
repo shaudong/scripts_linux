@@ -1,0 +1,68 @@
+#!/bin/bash
+docker_init_help() {
+        cat << EOF
+
+Usage: $0 [docker image] [root]
+        docker images:
+        10.118.96.1/arcwrt/ubuntu:noble-brcm-v2.1
+                - Build BCM 5.04/6.1.1/6.2.0/6.3.0/7.1.0 projects
+        10.118.96.1/arcwrt/ubuntu:bionic-bcm-legacy
+                - Build BCM legacy projects
+        10.118.96.1/arcwrt/ubuntu:focal-arcwrt-mtk-v1.8
+                - Support SDK "MTK750-5G-FG360-2.0"
+                - Support SDK "openwrt-21.02-mtk-v7621"
+                - Support SDK "fg370-2102-opensdk"
+                - Support SDK "compal-mtk-zm92-openwrt-23.05"
+                - Support PrplOS v3.0
+                - Support OpenWrt v19.07
+                - Support OpenWrt v21.02
+                - Support OpenWrt v23.05
+                - Support Project "XCI51AX44M-ZZ"
+                - Support Project "XCI51AX44M-1-MGP/v1.1.1" (openwrt 19.07)
+                - Support Project "XCI51AX44M-1-MGP/v1.1.2" (openwrt 21.02)
+                - Support Project "XC44BE4443T-F100-ZZ/v1.1.1" (openwrt 21.02 MTK T830)
+                - Support Project "XC44BE4443T-F100-ZZ/prplos_3.0" (PrplOS v3.0 MTK T830)
+                - Support Project "XC44BE443T-F100-DN/v1.1.1" (openwrt 23.05 MTK T830 Compal)
+        10.118.96.1/arcwrt/ubuntu:xenial-arcwrt-qca-v1.3
+                - Build Project "XC33AX443Y-F100-ZZ"
+                - Build SDK "qsdk-11_5-5g-fwa"
+        10.118.96.1/mtk/ubuntu:openwrt2305-mtk-t930-v1.0
+                - Build MTK T930 SDK
+        10.118.96.1/mtk/ubuntu:openwrt2305-mtk-t930-v1.0-rdk
+                - Build 2025Q4 RDK and MTK T930 SDK
+	ubuntu:aldk_504l04p3_v2
+                - Build aldk at 504l04p3
+To install new package in container please use root user.
+EOF
+}
+if [ $# -eq 0 ]; then
+        docker_init_help
+        exit 0
+fi
+
+DOCKER_IMAGE=$1
+shift
+USERNAME=${UID}:${UID}
+[ "$1" == "root" ] && USERNAME=root
+shift
+HUDSON_BUILD=0
+[ "${USER}" == "hudson" ] && HUDSON_BUILD=1
+
+CONN_ID=$(echo ${SSH_CONNECTION} | cut -d ' ' -f 2)
+DOCKER_ID=${USER}-${CONN_ID}-$(echo ${DOCKER_IMAGE} | sed 's#[:/]#-#g')
+
+[[ "$DOCKER_IMAGE" == "10.118.96.1"* && "`docker manifest inspect --insecure ${DOCKER_IMAGE} 2> /dev/null`" != "" ]] && docker pull ${DOCKER_IMAGE}
+
+if [ ${HUDSON_BUILD} == 0 ]; then
+        docker run -ti --rm -v ${HOME}:${HOME}:rw -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /etc/shadow:/etc/shadow:ro  -w ${PWD} --name ${DOCKER_ID} --privileged=true --user ${USERNAME} --hostname $(hostname) ${DOCKER_IMAGE}
+else
+        DOCKER_ID=hudson-$(echo ${DOCKER_IMAGE} | sed 's#[:/]#-#g')
+        touch ~/workspace/${JOB_NAME}/docker_id
+        echo ${DOCKER_ID} > ~/workspace/${JOB_NAME}/docker_id
+        if [ "$(docker ps -a | grep ${DOCKER_ID})" ]; then
+                docker start ${DOCKER_ID}
+                exit 0
+        fi
+
+        docker run -di --rm -v ${HOME}:${HOME} -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro -v /etc/shadow:/etc/shadow:ro -w ${PWD} --cpus 2 --name ${DOCKER_ID} --privileged=true --user ${USERNAME} --hostname $(hostname) ${DOCKER_IMAGE}
+fi
