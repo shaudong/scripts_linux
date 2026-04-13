@@ -6,7 +6,7 @@ confirm_and_cp() {
     echo ""
     
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        install -D "$src" "$dest"
+        vimdiff "$src" "$dest"
     fi
     echo "--------------------------------"
 }
